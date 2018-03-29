@@ -4,7 +4,8 @@
   "description": "app for tracking cost data for select items presented in a line chart",
   "main": "app.js",
   "scripts": {
-    "test": "test"
+    "start": "node server.js",
+    "test": "mocha --exit"
   },
   "author": "Nataliya Gapochka",
   "license": "ISC",
