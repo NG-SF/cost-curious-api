@@ -1,0 +1,11 @@
+language: node_js
+node_js: node
+services:
+  - mongodb
+deploy:
+  provider: heroku
+  api_key:
+    secure: c2CuAfHZpYJPs3vLIdPnSYw/yjam/gWDIPX+cQ+b9iibu5lpOYhV57jyKsHZB0/I9ZR/Xn3ZDMyp7kfb4rFTJfwxDkTe3tf5HBWghkfwMxMxOGNYF6D7Gsh8s/5HDNlMFOOXfTLxotInckfl1dvWghvrlxgEHBC9LcDW5L6TIA0E+UBEWiTaxmh6g19gkMsZEx5FOBl8zg7TQVJLF2Wv8HmA+rMwV8Ft5p9vmHpNdF0GzFhyDCVnIKPWWidyOC2vdgzPZwK4YJs7EvQxI+eQ+lxTfH4MZO/UeMntS2ZZWIzkrldLgah9YngObm4tMIp/dSydSYJfrYvBM+Fgr54GNxYtTA5hmxqSvhZk6LlcLjGTwowvz1hJi+mgmhyYBYRp0queNffaPD/hpKCLv/ZdbFJguKn2DfR/uR8t98rZDRuuXz0IIcqjO2BZdzCgVTBP14K5BFx/cGZz2KuvCT1H/rIIq96GpzTOVAm4w3OWBfYf2dioepQuEXeSCs0R6q9zemJ4folRdXuB1io0IEZCjPg4AdN1W6eJGi7MB3uUWi3gtEZWMxp/k0cNzRNvgnsgpp7HpgWdYAvlyvyMbcNd8fJ5/QJTWEjRU8L6oOctvQx6UCAGJJ5BqzK2pmYTY8qg80j4GuLv+hVSBGK/yVVyq7MnOlCg8JPRapGP8p0+XGY=
+  app: cost-curious-api
+  on:
+    repo: NG-SF/cost-curious-api
