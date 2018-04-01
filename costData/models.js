@@ -15,13 +15,16 @@ const costDataSchema = new Schema({
   history: [transactionsSchema]
 });
 
+// const costDataSchema = new Schema({
+//   description: {type: String, unique: true},
+//   history: [{
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: 'transactions'
+//     }]
+// });
 
-// virtual property to return date formated with moment.js
-costDataSchema.virtual('date').get(function() {
-  return moment(this.createdAt).format('MMMM Do, YYYY');
-});
 
 const CostData = mongoose.model('costData', costDataSchema);
-const Transactions = mongoose.model('transactions', transactionsSchema);
+// const Transactions = mongoose.model('transactions', transactionsSchema);
 
-module.exports = { CostData, Transactions };
+module.exports = { CostData };

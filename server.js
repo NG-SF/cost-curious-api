@@ -2,22 +2,25 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
 const mongoose = require('mongoose');
 const {CLIENT_ORIGIN, PORT, DATABASE_URL} = require('./config');
 const { router: dataRouter } = require('./costData/router');
 mongoose.Promise = global.Promise;
 
 app.use( cors({ origin: CLIENT_ORIGIN }));
+app.use(morgan('common'));
 app.use('/api', dataRouter);
 
-app.get('/hi', (req, res) => {
+app.get('/test', (req, res) => {
    res.json({ok: true, text: 'Hi from server'});
  });
 
-// app.use('*', (req, res) => {
-//   let message = 'Page Not Found';
-//   return res.status(404).json({ error: message });
-// });
+app.use('*', (req, res) => {
+  return res.status(404).json({ message: 'Page Not Found'});
+});
 
 let server;
 
@@ -27,6 +30,7 @@ function runServer(databaseUrl = DATABASE_URL, port = PORT) {
   return new Promise((resolve, reject) => {
     mongoose.connect(databaseUrl, err => {
       if (err) {
+        console.log('Error from mongoose.connect');
         return reject(err);
       }
       server = app
@@ -41,7 +45,6 @@ function runServer(databaseUrl = DATABASE_URL, port = PORT) {
     });
   });
 }
-
 // this function closes the server, and returns a promise.
 // it is also used in integration tests.
 function closeServer() {
