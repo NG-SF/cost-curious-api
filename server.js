@@ -6,13 +6,25 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 const mongoose = require('mongoose');
+const passport = require('passport');
 const {CLIENT_ORIGIN, PORT, DATABASE_URL} = require('./config');
 const { router: dataRouter } = require('./costData/router');
+const { router: usersRouter } = require('./users/router');
+const { router: authRouter } = require('./auth/router');
+const { localStrategy, jwtStrategy } = require('./auth/strategies');
+
 mongoose.Promise = global.Promise;
 
 app.use( cors({ origin: CLIENT_ORIGIN }));
 app.use(morgan('common'));
-app.use('/api', dataRouter);
+app.use('/api/', dataRouter);
+app.use('/users/', usersRouter);
+app.use('/auth/', authRouter);
+
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+
+
 
 app.get('/test', (req, res) => {
    res.json({ok: true, text: 'Hi from server'});

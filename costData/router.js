@@ -15,6 +15,10 @@ router.get('/dashboard', (req, res) => {
   CostData.find()
   .then(data => {
    res.json(data);
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).json({message: "Can't get cost data. Internal server error"});
   });
 });
 
@@ -32,7 +36,7 @@ router.post('/dashboard', jsonParser, (req, res) => {
   }
 
   CostData.create({description: req.body.description})
-  .then(data => res.status(201).json(data))
+  .then(data => res.json(data))
   .catch(err => {
       console.error(err);
       res.status(500).json({ message: 'Sorry, internal error' });
@@ -54,7 +58,6 @@ router.delete('/dashboard/:id', (req, res) => {
 router.put('/dashboard/:id', jsonParser, (req, res) => {
   const toUpdate = {};
   const updatableFields = ['description'];
-console.log('REQ.Body====',req.body);
 
   updatableFields.forEach(field => {
     if (field in req.body) {
@@ -62,16 +65,23 @@ console.log('REQ.Body====',req.body);
     }
   });
   CostData.findByIdAndUpdate(req.params.id, { $set: toUpdate })
-  .then(costData => { res.status(204).json(costData);})
+  .then(() => CostData.findById(req.params.id))
+  .then(costData => { 
+    res.json(costData);})
   .catch(err => res.status(500).json({ message: 'Sorry, internal error' }));
 });
 
+//++++++++++++++++++++++ Routes for nested history array +++++++++++++++++++++++++
 // GET Data History from specific Category Route
 router.get('/:name', (req, res) => {
   CostData.find({description: req.params.name})
   .then(data => {
     console.log(data);
    res.json(data[0].history);
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).json({message: "Can't get cost data. Internal server error"});
   });
 });
 
