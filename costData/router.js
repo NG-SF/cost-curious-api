@@ -4,6 +4,7 @@ const express = require('express'),
       mongoose = require('mongoose'),
       router = express.Router(),
       { CostData } = require('./models'),
+      { User } = require('../users/models'),
       app = express();
 
 mongoose.Promise = global.Promise;
@@ -11,8 +12,9 @@ mongoose.Promise = global.Promise;
 // router.use(bodyParser.urlencoded({ extended: true }));
 
 // GET Data Route
-router.get('/dashboard', (req, res) => {
-  CostData.find()
+router.get('/dashboard/:userId', (req, res) => {
+  User.findById(req.params.userId)
+  .then(user => CostData.find({userId: user._id}))
   .then(data => {
    res.json(data);
   })
@@ -23,7 +25,7 @@ router.get('/dashboard', (req, res) => {
 });
 
 // CREATE New Category Route
-router.post('/dashboard', jsonParser, (req, res) => {
+router.post('/dashboard/:userId', jsonParser, (req, res) => {
   console.log(req.body);
   const requiredFields = ['description'];
   for (let i = 0; i < requiredFields.length; i++) {
@@ -35,7 +37,11 @@ router.post('/dashboard', jsonParser, (req, res) => {
     }
   }
 
-  CostData.create({description: req.body.description})
+  CostData.create({
+    description: req.body.description,
+    userId: req.params.userId })
+  .then(() => User.findById(req.params.userId))
+  .then(user => CostData.find({userId: user._id}))
   .then(data => res.json(data))
   .catch(err => {
       console.error(err);
@@ -44,7 +50,7 @@ router.post('/dashboard', jsonParser, (req, res) => {
 });
 
 // DELETE Category Route
-router.delete('/dashboard/:id', (req, res) => {
+router.delete('/dashboard/:userId/:id', (req, res) => {
   CostData
     .findByIdAndRemove(req.params.id)
     .then(() => {res.status(204).json({message: "Successfuly removed your item"})})
@@ -55,7 +61,7 @@ router.delete('/dashboard/:id', (req, res) => {
 });
 
 // UPDATE Category Route
-router.put('/dashboard/:id', jsonParser, (req, res) => {
+router.put('/dashboard/:userId/:id', jsonParser, (req, res) => {
   const toUpdate = {};
   const updatableFields = ['description'];
 
@@ -65,7 +71,8 @@ router.put('/dashboard/:id', jsonParser, (req, res) => {
     }
   });
   CostData.findByIdAndUpdate(req.params.id, { $set: toUpdate })
-  .then(() => CostData.findById(req.params.id))
+  .then(() => User.findById(req.params.userId))
+  .then(user => CostData.find({userId: user._id}))
   .then(costData => { 
     res.json(costData);})
   .catch(err => res.status(500).json({ message: 'Sorry, internal error' }));
@@ -73,11 +80,10 @@ router.put('/dashboard/:id', jsonParser, (req, res) => {
 
 //++++++++++++++++++++++ Routes for nested history array +++++++++++++++++++++++++
 // GET Data History from specific Category Route
-router.get('/:name', (req, res) => {
-  CostData.find({description: req.params.name})
+router.get('/:dataId', (req, res) => {
+  CostData.findById(req.params.dataId)
   .then(data => {
-    console.log(data);
-   res.json(data[0].history);
+   res.json(data.history);
   })
   .catch(err => {
     console.error(err);
@@ -86,8 +92,7 @@ router.get('/:name', (req, res) => {
 });
 
 // CREATE New transaction for specific Category Route
-router.post('/:name', jsonParser, (req, res) => {
-  console.log(req.body);
+router.post('/:dataId', jsonParser, (req, res) => {
   const requiredFields = ['amount', 'createdAt'];
   for (let i = 0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
@@ -103,14 +108,14 @@ router.post('/:name', jsonParser, (req, res) => {
     place: req.body.place || ''
     };
 
-  CostData.find({description: req.params.name})
+  CostData.findById(req.params.dataId)
   .then(data => {
-    data[0].history.push(transaction);
-    return data[0].save();
+    data.history.push(transaction);
+    return data.save();
   })
-  .then(() => CostData.find({description: req.params.name}))
+  .then(() => CostData.findById(req.params.dataId))
   .then(data => {
-    res.status(201).json(data[0].history)
+    res.status(201).json(data.history)
   })
   .catch(err => {
       console.error(err);
@@ -119,7 +124,7 @@ router.post('/:name', jsonParser, (req, res) => {
 });
 
 //UPDATE transaction for specific Category Route
-router.put('/:name/:itemId', jsonParser, (req, res) => {
+router.put('/:dataId/:itemId', jsonParser, (req, res) => {
   const toUpdate = {};
   const updatableFields = ['amount', 'createdAt', 'place'];
   updatableFields.forEach(field => {
@@ -127,15 +132,15 @@ router.put('/:name/:itemId', jsonParser, (req, res) => {
       toUpdate[field] = req.body[field];
     }
   });
-  CostData.find({description: req.params.name})
+  CostData.findById(req.params.dataId)
   .then(data => {
-    const history = data[0].history.id(req.params.itemId);
+    const history = data.history.id(req.params.itemId);
     history.set(toUpdate);
-    return data[0].save();
+    return data.save();
   })
-  .then(() => CostData.find({description: req.params.name}))
+  .then(() => CostData.findById(req.params.dataId))
   .then(data => {
-    res.status(201).json(data[0].history)
+    res.status(201).json(data.history)
   })
   .catch(err => {
       console.error(err);
@@ -144,11 +149,11 @@ router.put('/:name/:itemId', jsonParser, (req, res) => {
 });
 
 // DELETE specific transaction in history of specific Category Route
-router.delete('/:name/:itemId', (req, res) => {
-  CostData.find({description: req.params.name})
+router.delete('/:dataId/:itemId', (req, res) => {
+  CostData.findById(req.params.dataId)
   .then(data => {
-    data[0].history.id(req.params.itemId).remove();
-    return data[0].save();
+    data.history.id(req.params.itemId).remove();
+    return data.save();
   })
     .then(() => {res.status(204).json({message: "Successfuly removed your item"})})
     .catch(err => {

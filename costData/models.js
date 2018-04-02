@@ -12,6 +12,7 @@ const transactionsSchema = new Schema({
 
 const costDataSchema = new Schema({
   description: {type: String, unique: true},
+  userId: String,
   history: [transactionsSchema]
 });
 
