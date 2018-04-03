@@ -2,17 +2,18 @@ const express = require('express'),
       bodyParser = require('body-parser'),
       jsonParser = bodyParser.json(),
       mongoose = require('mongoose'),
+      passport = require('passport'),
       router = express.Router(),
       { CostData } = require('./models'),
       { User } = require('../users/models'),
       app = express();
 
 mongoose.Promise = global.Promise;
-
-// router.use(bodyParser.urlencoded({ extended: true }));
+router.use(jsonParser);
+const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // GET Data Route
-router.get('/dashboard/:userId', (req, res) => {
+router.get('/dashboard/:userId', jwtAuth, (req, res) => {
   User.findById(req.params.userId)
   .then(user => CostData.find({userId: user._id}))
   .then(data => {
@@ -25,7 +26,7 @@ router.get('/dashboard/:userId', (req, res) => {
 });
 
 // CREATE New Category Route
-router.post('/dashboard/:userId', jsonParser, (req, res) => {
+router.post('/dashboard/:userId', jwtAuth, (req, res) => {
   console.log(req.body);
   const requiredFields = ['description'];
   for (let i = 0; i < requiredFields.length; i++) {
@@ -50,10 +51,14 @@ router.post('/dashboard/:userId', jsonParser, (req, res) => {
 });
 
 // DELETE Category Route
-router.delete('/dashboard/:userId/:id', (req, res) => {
+router.delete('/dashboard/:userId/:id', jwtAuth,(req, res) => {
   CostData
     .findByIdAndRemove(req.params.id)
-    .then(() => {res.status(204).json({message: "Successfuly removed your item"})})
+    .then(() => User.findById(req.params.userId))
+    .then(user => CostData.find({userId: user._id}))
+    .then(costData => { 
+      res.json(costData);})
+    // .then(() => {res.status(204).json({message: "Successfuly removed your item"})})
     .catch(err => {
       console.error(err);
       res.status(500).json({message: "Can't delete your post. Something went wrong."});
@@ -61,7 +66,7 @@ router.delete('/dashboard/:userId/:id', (req, res) => {
 });
 
 // UPDATE Category Route
-router.put('/dashboard/:userId/:id', jsonParser, (req, res) => {
+router.put('/dashboard/:userId/:id', jwtAuth, (req, res) => {
   const toUpdate = {};
   const updatableFields = ['description'];
 
@@ -80,7 +85,7 @@ router.put('/dashboard/:userId/:id', jsonParser, (req, res) => {
 
 //++++++++++++++++++++++ Routes for nested history array +++++++++++++++++++++++++
 // GET Data History from specific Category Route
-router.get('/:dataId', (req, res) => {
+router.get('/:dataId', jwtAuth, (req, res) => {
   CostData.findById(req.params.dataId)
   .then(data => {
    res.json(data.history);
@@ -124,7 +129,7 @@ router.post('/:dataId', jsonParser, (req, res) => {
 });
 
 //UPDATE transaction for specific Category Route
-router.put('/:dataId/:itemId', jsonParser, (req, res) => {
+router.put('/:dataId/:itemId', jwtAuth, (req, res) => {
   const toUpdate = {};
   const updatableFields = ['amount', 'createdAt', 'place'];
   updatableFields.forEach(field => {
@@ -149,7 +154,7 @@ router.put('/:dataId/:itemId', jsonParser, (req, res) => {
 });
 
 // DELETE specific transaction in history of specific Category Route
-router.delete('/:dataId/:itemId', (req, res) => {
+router.delete('/:dataId/:itemId', jwtAuth,(req, res) => {
   CostData.findById(req.params.dataId)
   .then(data => {
     data.history.id(req.params.itemId).remove();
