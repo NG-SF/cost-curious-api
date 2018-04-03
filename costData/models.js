@@ -11,19 +11,10 @@ const transactionsSchema = new Schema({
 });
 
 const costDataSchema = new Schema({
-  description: {type: String, unique: true},
+  description: String,
   userId: String,
   history: [transactionsSchema]
 });
-
-// const costDataSchema = new Schema({
-//   description: {type: String, unique: true},
-//   history: [{
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: 'transactions'
-//     }]
-// });
-
 
 const CostData = mongoose.model('costData', costDataSchema);
 // const Transactions = mongoose.model('transactions', transactionsSchema);

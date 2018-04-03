@@ -11,7 +11,7 @@ chai.use(chaiHttp);
 function seedCostData() {
   console.log('seeding data');
   const seedData = [];
-  for (let i=1; i<=10; i++) {
+  for (let i=1; i<=5; i++) {
     seedData.push(generateCostData());
   }
   return CostData.insertMany(seedData);
@@ -19,36 +19,48 @@ function seedCostData() {
 function generateCostData() {
   return {
     discription: faker.lorem.word(),
-    history: {
+    id: faker.random.uuid(),
+    userId: 'idForOneUser11111',
+    history: [{
       amount: faker.random.number(),
       createdAt: faker.date.recent(),
       place: faker.lorem.words()
-    }
+      }, {
+      amount: faker.random.number(),
+      createdAt: faker.date.recent(),
+      place: faker.lorem.words()
+      }, {
+      amount: faker.random.number(),
+      createdAt: faker.date.recent(),
+      place: faker.lorem.words()
+      }
+    ]    
 }
 }
 function tearDownDb() {
   console.warn('Deleting database');
   return mongoose.connection.dropDatabase();
 }
+const userId = 'idForOneUser11111';
 
 describe('CostData API resource', function() {
-  // before(function() {
-  //   return runServer(TEST_DATABASE_URL, PORT);
-  // });
-  // beforeEach(function() {
-  //   return seedCostData();
-  // });
-  // afterEach(function() {
-  //   return tearDownDb();
-  // });
-  // after(function() {
-  //   return closeServer();
-  // });
+  before(function() {
+    return runServer(TEST_DATABASE_URL, PORT);
+  });
+  beforeEach(function() {
+    return seedCostData();
+  });
+  afterEach(function() {
+    return tearDownDb();
+  });
+  after(function() {
+    return closeServer();
+  });
 
-  xit('should return all existing cost data', function() {
+  it('should return all existing cost data', function() {
     let res;
      return chai.request(app)
-       .get('/api/dashboard')
+       .get(`/api/dashboard/${userId}`)
        .then(function(_res) {
          res = _res;
          res.should.have.status(200);

@@ -61,7 +61,7 @@ router.delete('/dashboard/:userId/:id', jwtAuth,(req, res) => {
     // .then(() => {res.status(204).json({message: "Successfuly removed your item"})})
     .catch(err => {
       console.error(err);
-      res.status(500).json({message: "Can't delete your post. Something went wrong."});
+      res.status(500).json({message: "Can't delete your item. Something went wrong."});
     });
 });
 
@@ -97,7 +97,7 @@ router.get('/:dataId', jwtAuth, (req, res) => {
 });
 
 // CREATE New transaction for specific Category Route
-router.post('/:dataId', jsonParser, (req, res) => {
+router.post('/:dataId', jwtAuth, (req, res) => {
   const requiredFields = ['amount', 'createdAt'];
   for (let i = 0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
@@ -160,7 +160,11 @@ router.delete('/:dataId/:itemId', jwtAuth,(req, res) => {
     data.history.id(req.params.itemId).remove();
     return data.save();
   })
-    .then(() => {res.status(204).json({message: "Successfuly removed your item"})})
+  .then(() => CostData.findById(req.params.dataId))
+  .then(data => {
+    res.json(data.history)
+  })
+    // .then(() => {res.status(204).json({message: "Successfuly removed your item"})})
     .catch(err => {
       console.error(err);
       res.status(500).json({message: "Can't delete your transaction. Something went wrong."});
