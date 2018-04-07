@@ -7,12 +7,13 @@ const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 const mongoose = require('mongoose');
 const passport = require('passport');
-const {CLIENT_ORIGIN, PORT, DATABASE_URL} = require('./config');
+const {CLIENT_ORIGIN, PORT, DATABASE_URL, TESTING} = require('./config');
 const { router: dataRouter } = require('./costData/router');
 const { router: usersRouter } = require('./users/router');
 const { router: authRouter } = require('./auth/router');
+const { router: featuresRouter } = require('./features/router');
 const { localStrategy, jwtStrategy } = require('./auth/strategies');
-
+// mongoose.set('debug', true);
 mongoose.Promise = global.Promise;
 
 app.use( cors({ origin: CLIENT_ORIGIN }));
@@ -20,10 +21,9 @@ app.use(morgan('common'));
 app.use('/api/', dataRouter);
 app.use('/users/', usersRouter);
 app.use('/auth/', authRouter);
-
+app.use('/features/', featuresRouter);
 passport.use(localStrategy);
 passport.use(jwtStrategy);
-
 
 
 app.get('/test', (req, res) => {
@@ -38,7 +38,9 @@ let server;
 
 // this function starts the server.
 // it is also used in integration tests.
-function runServer(databaseUrl = DATABASE_URL, port = PORT) {
+function runServer(databaseUrl = DATABASE_URL, port = PORT, testing=false) {
+  // TESTING = testing; 
+  testing = TESTING;
   return new Promise((resolve, reject) => {
     mongoose.connect(databaseUrl, err => {
       if (err) {

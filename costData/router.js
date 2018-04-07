@@ -6,11 +6,17 @@ const express = require('express'),
       router = express.Router(),
       { CostData } = require('./models'),
       { User } = require('../users/models'),
+      TESTING = require('../config'),
       app = express();
 
 mongoose.Promise = global.Promise;
 router.use(jsonParser);
-const jwtAuth = passport.authenticate('jwt', { session: false });
+
+const fakeAuth = function(req, res, next) {
+  next();
+}
+
+const jwtAuth = TESTING ? fakeAuth : passport.authenticate('jwt', { session: false });
 
 // GET Data Route
 router.get('/dashboard/:userId', jwtAuth, (req, res) => {

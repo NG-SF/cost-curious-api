@@ -17,6 +17,5 @@ const costDataSchema = new Schema({
 });
 
 const CostData = mongoose.model('costData', costDataSchema);
-// const Transactions = mongoose.model('transactions', transactionsSchema);
 
 module.exports = { CostData };
