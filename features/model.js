@@ -5,7 +5,8 @@ mongoose.Promise = global.Promise;
 
 const featuresSchema = new Schema({
     limit: String,
-    dataCategory: String
+    dataCategory: String,
+    dataId: String
 });
 
 const Features = mongoose.model('feature', featuresSchema);

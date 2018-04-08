@@ -26,10 +26,6 @@ passport.use(localStrategy);
 passport.use(jwtStrategy);
 
 
-app.get('/test', (req, res) => {
-   res.json({ok: true, text: 'Hi from server'});
- });
-
 app.use('*', (req, res) => {
   return res.status(404).json({ message: 'Page Not Found'});
 });

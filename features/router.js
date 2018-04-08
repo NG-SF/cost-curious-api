@@ -18,8 +18,8 @@ const fakeAuth = function(req, res, next) {
 const jwtAuth = TESTING ? fakeAuth : passport.authenticate('jwt', { session: false });
 
 // GET Data Route
-router.get('/:a/:b/:c', (req, res) => {
-  Features.find()
+router.get('/:dataId', jwtAuth, (req, res) => {
+  Features.find({dataId: req.params.dataId})
   .then(data => {
    res.json(data);
   })
@@ -31,8 +31,7 @@ router.get('/:a/:b/:c', (req, res) => {
 
 // CREATE Data Route
 //
-router.post('/:a/:b/:c', (req, res) => {
-// console.log('limit', req.body);
+router.post('/:dataId', jwtAuth, (req, res) => {
   const requiredFields = ['limit', 'dataCategory'];
   for (let i = 0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
@@ -44,8 +43,9 @@ router.post('/:a/:b/:c', (req, res) => {
   }
   Features.create({
     limit: req.body.limit,
-    dataCategory: req.body.dataCategory })
-  .then(() => Features.find())
+    dataCategory: req.body.dataCategory,
+    dataId: req.params.dataId })
+  .then(() => Features.find({dataId: req.params.dataId}))
   .then(data => res.json(data))
   .catch(err => {
       console.error(err);
@@ -54,12 +54,12 @@ router.post('/:a/:b/:c', (req, res) => {
 });
 
 //UPDATE Data Route
-router.put('/:a/:b/:c', (req, res) => {
+router.put('/:dataId', jwtAuth, (req, res) => {
   const toUpdate = {limit: req.body.limit};
 
   Features.findByIdAndUpdate(req.body.limitId, {$set: toUpdate})
-  .then(() => Features.find())
-  .then(data => res.status(201).json(data))
+  .then(() => Features.find({dataId: req.params.dataId}))
+  .then(data => res.json(data))
   .catch(err => {
       console.error(err);
       res.status(500).json({ message: 'Sorry, internal error' });
@@ -67,9 +67,9 @@ router.put('/:a/:b/:c', (req, res) => {
 });
 
 // DELETE Data Route
-router.delete('/:a/:b/:c',(req, res) => {
+router.delete('/:dataId', jwtAuth, (req, res) => {
   Features.findByIdAndRemove(req.body.limitId)
-    .then(() => Features.find())
+    .then(() => Features.find({dataId: req.params.dataId}))
     .then(data => res.json(data))
     .catch(err => {
       console.error(err);
