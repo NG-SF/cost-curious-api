@@ -13,7 +13,6 @@ const { router: usersRouter } = require('./users/router');
 const { router: authRouter } = require('./auth/router');
 const { router: featuresRouter } = require('./features/router');
 const { localStrategy, jwtStrategy } = require('./auth/strategies');
-// mongoose.set('debug', true);
 mongoose.Promise = global.Promise;
 
 app.use( cors({ origin: CLIENT_ORIGIN }));
@@ -24,7 +23,6 @@ app.use('/auth/', authRouter);
 app.use('/features/', featuresRouter);
 passport.use(localStrategy);
 passport.use(jwtStrategy);
-
 
 app.use('*', (req, res) => {
   return res.status(404).json({ message: 'Page Not Found'});
