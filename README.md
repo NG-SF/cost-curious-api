@@ -9,6 +9,7 @@
   <li>CSS3</li>
   <li>JavaScript</li>
   <li><a href="https://reactjs.org/" target="_blank" rel="noopener">React</a></li>
+  <li><a href="http://www.chartjs.org/docs/latest/" target="_blank" rel="noopener">Chart.js</a></li>
 </ul>
 <h3>Back End</h3>
 <ul>
@@ -30,11 +31,13 @@
 <ul>
   <li><a href="https://mochajs.org/" target="_blank" rel="noopener">Mocha</a>- testing framework</li>
   <li><a href="http://chaijs.com/" target="_blank" rel="noopener">Chai</a>- assertion library</li>
+  <li><a href="https://github.com/Marak/Faker.js" target="_blank" rel="noopener">Faker</a>- fake data generator</li>
 </ul>
 
 <h3>Deployment</h3>
 <ul>
   <li>Continuous integration and deployment with <a href="https://travis-ci.org/" target="_blank" rel="noopener">Travis CI</a></li>
+  <li><a href="https://www.heroku.com/" target="_blank" rel="noopener">Heroku</a>-cloud PaaS </li>
   <li><a href="https://www.netlify.com/" target="_blank" rel="noopener">Netlify</a></li>
   <li><a href="https://mlab.com/" target="_blank" rel="noopener">mLab</a>- cloud database service</li>
 </ul>
