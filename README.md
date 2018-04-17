@@ -58,8 +58,10 @@
 
 
 ## Screenshots 📸
-
 ![screenshot of homepage](/screenshots/Home.png) 
+<h3>Dashboard</h3>
 ![screenshot of dashboard](/screenshots/Dashboard.png)
+<h3>Summary page for single category</h3>
 ![screenshot of single item in category summary](/screenshots/ItemPage1.png)
+<h3>Summary page for single category</h3>
 ![screenshot of single item in category summary](/screenshots/ItemPage2.png)
