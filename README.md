@@ -59,6 +59,7 @@
 
 ## Screenshots 📸
 
-![screenshot of homepage](/screenshots/HomePage.png) 
+![screenshot of homepage](/screenshots/Home.png) 
 ![screenshot of dashboard](/screenshots/Dashboard.png)
-![screenshot of category summary](/screenshots/ItemPage.png)
+![screenshot of single item in category summary](/screenshots/ItemPage1.png)
+![screenshot of single item in category summary](/screenshots/ItemPage2.png)
