@@ -1,5 +1,5 @@
 <h1> Cost curious app </h1> 
-[![Build Status](https://travis-ci.org/NG-SF/cost-curious-api.svg?branch=master)]
+[![Build Status](https://travis-ci.org/NG-SF/cost-curious-api.svg?branch=master)][https://travis-ci.org/NG-SF/cost-curious-api]
 <p><a href="https://cost-curious.netlify.com/" target="_blank" rel="noopener">Cost curious</a> is a responsive full-stack app that helps users to discover their spending habits.</p>
 
 ## Technology Used  🛠
