@@ -2,10 +2,10 @@
 
 [![Travis](https://travis-ci.org/NG-SF/cost-curious-api.svg?branch=master)](https://travis-ci.org/NG-SF/cost-curious-api)
 
-<p><a href="https://cost-curious.netlify.com/" target="_blank" rel="noopener">Cost curious</a> is a responsive full-stack app that helps users to discover their spending habits.</p>
+<p><a href="https://cost-curious.netlify.com/" target="_blank" rel="noopener">Cost curious</a> is a responsive full-stack app that helps users discover their spending habits.</p>
 
 ## Technology Used  🛠
-<h3>Front End</h3>
+<h3><a href="https://github.com/NG-SF/cost-curious-client" target="_blank" rel="noopener">Front End</a></h3>
 <ul>
   <li>HTML5</li>
   <li>CSS3</li>
